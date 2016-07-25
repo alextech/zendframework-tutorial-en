@@ -5,7 +5,7 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application;
+namespace Portal;
 
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;

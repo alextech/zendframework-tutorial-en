@@ -24,13 +24,13 @@
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application/src/",
+            "Portal\\": "module/Portal/src/",
             "ZFT\\": "module/ZFT/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ApplicationTest\\": "module/Application/test/"
+            "PortalTest\\": "module/Portal/test/"
         }
     },
     "extra": [],
