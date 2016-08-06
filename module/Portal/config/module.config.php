@@ -9,6 +9,7 @@ namespace Portal;
 
 use Interop\Container\ContainerInterface;
 use Portal\Controller\IndexController;
+use Portal\Controller\IndexControllerFactory;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
@@ -41,11 +42,7 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class => function(ContainerInterface $serviceManager, $controller) {
-                $repository = $serviceManager->get(User\Repository::class);
-
-                return new IndexController($repository);
-            }
+            Controller\IndexController::class => IndexControllerFactory::class
         ],
     ],
     'view_manager' => [
