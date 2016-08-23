@@ -20,7 +20,9 @@
         "zendframework/zend-db": "^2.8.1",
         "zendframework/zend-json": "^3.0",
         "zendframework/zend-log": "^2.9",
-        "zendframework/zend-session": "^2.7.1"
+        "zendframework/zend-session": "*",
+        "zendframework/zend-ldap": "*",
+        "zendframework/zend-authentication": "*"
     },
     "autoload": {
         "psr-4": {

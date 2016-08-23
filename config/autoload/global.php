@@ -14,6 +14,25 @@
 return [
     'db' => [
         'driver' => 'Pgsql'
+    ],
+    'ldapServers' => [
+        'mainDC' => [
+            'host' => 'dc-server.ad.alex-tech-adventures.com',
+            'useStartTls' => true,
+            'accountDomainName' => 'ad.alex-tech-adventures.com',
+            'accountDomainNameShort' => 'alex-tech',
+            'baseDN' => 'CN=Users,DC=ad,DC=alex-tech-adventures,DC=com',
+            'accountCanonicalForm' => \Zend\Ldap\Ldap::ACCTNAME_FORM_BACKSLASH // alex-tech\sasha
+        ],
+
+        'apacheDS' => [
+            'host' => 'apacheds.ad.alex-tech-adventures.com',
+            'port' => 10389,
+            'accountDomainShort' => 'alex-tech',
+            'accountDomainName' => 'ds.alex-tech-adventures.com',
+            'accountCanonicalForm' => \Zend\Ldap\Ldap::ACCTNAME_FORM_DN, // alex-tech\sasha
+            'baseDN' => 'CN=Users,DC=ad,DC=alex-tech-adventures,DC=com'
+        ]
     ]
     // ...
 ];
