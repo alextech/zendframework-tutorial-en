@@ -21,17 +21,19 @@ return [
             'useStartTls' => true,
             'accountDomainName' => 'ad.alex-tech-adventures.com',
             'accountDomainNameShort' => 'alex-tech',
-            'baseDN' => 'CN=Users,DC=ad,DC=alex-tech-adventures,DC=com',
-            'accountCanonicalForm' => \Zend\Ldap\Ldap::ACCTNAME_FORM_BACKSLASH // alex-tech\sasha
+            'baseDn' => 'CN=Users,DC=ad,DC=alex-tech-adventures,DC=com',
+            'accountCanonicalForm' => \Zend\Ldap\Ldap::ACCTNAME_FORM_BACKSLASH, // alex-tech\sasha
+            'accountFilterFormat' => '(&(objectClass=user)(sAMAccountName=%s))'
         ],
 
         'apacheDS' => [
             'host' => 'apacheds.ad.alex-tech-adventures.com',
             'port' => 10389,
-            'accountDomainShort' => 'alex-tech',
             'accountDomainName' => 'ds.alex-tech-adventures.com',
+            'accountDomainNameShort' => 'alex-tech',
             'accountCanonicalForm' => \Zend\Ldap\Ldap::ACCTNAME_FORM_DN, // alex-tech\sasha
-            'baseDN' => 'CN=Users,DC=ad,DC=alex-tech-adventures,DC=com'
+            'baseDn' => 'ou=Users,DC=ds,DC=alex-tech-adventures,DC=com',
+            'accountFilterFormat' => '(&(objectClass=inetOrgPerson)(uid=%s))'
         ]
     ]
     // ...
