@@ -26,8 +26,9 @@ class UserRelatedControllerFactory implements FactoryInterface {
         }
 
         $repository = $serviceManager->get(User\Repository::class);
+        $authService = $serviceManager->get('authentication');
 
-        return new $controllerName($repository);
+        return new $controllerName($repository, $authService);
     }
 
 

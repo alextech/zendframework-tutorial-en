@@ -7,6 +7,8 @@
 
 namespace Portal\Controller;
 
+use Zend\Authentication\Adapter\Ldap;
+use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use ZFT\User;
@@ -17,12 +19,22 @@ class IndexController extends AbstractActionController
     /** @var  User\Repository */
     private $userRepository;
 
-    public function __construct(User\Repository $userRepository) {
+    /** @var  AuthenticationService */
+    private $authService;
+
+    public function __construct(User\Repository $userRepository, AuthenticationService $authService) {
         $this->userRepository = $userRepository;
+        $this->authService = $authService;
     }
 
     public function indexAction()
     {
+        /** @var Ldap $adapter */
+        $adapter = $this->authService->getAdapter();
+        $adapter->setIdentity('zftutorial'); // username
+        $adapter->setCredential('ZFT2016!'); // password
+        $result = $this->authService->authenticate();
+
 //        $user = new User();
 
         $user = $this->userRepository->getUserById(5);
