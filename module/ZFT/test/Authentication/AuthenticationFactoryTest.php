@@ -8,6 +8,7 @@ use Zend\Authentication\AuthenticationService;
 use Zend\ServiceManager\ServiceManager;
 use Zend\Session;
 use ZFT\Authentication\AuthenticationServiceFactory;
+use ZFT\Connections\LdapFactory;
 
 class AuthenticationFactoryTest extends \PHPUnit_Framework_TestCase {
 
@@ -20,6 +21,7 @@ class AuthenticationFactoryTest extends \PHPUnit_Framework_TestCase {
         $this->sm = new ServiceManager();
         $this->sm->setService('Configuration', require __DIR__.'/../../../../config/autoload/global.php');
         $this->sm->setService('authentication', new AuthenticationServiceFactory());
+        $this->sm->setFactory('ldap', LdapFactory::class);
     }
 
     public function testCanCreateAuthenticationService() {
