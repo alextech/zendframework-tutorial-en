@@ -34,6 +34,7 @@ class IndexController extends AbstractActionController
         $adapter->setIdentity('zftutorial'); // username
         $adapter->setCredential('ZFT2016!'); // password
         $result = $this->authService->authenticate();
+        $isSuccessful = $result->isValid();
 
 //        $user = new User();
 

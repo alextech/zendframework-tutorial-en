@@ -2,11 +2,10 @@
 
 namespace ZFT;
 
-use Interop\Container\ContainerInterface;
-use Zend\Authentication\AuthenticationService;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use ZFT\Authentication\AuthenticationServiceFactory;
+use ZFT\Connections\LdapFactory;
 use ZFT\User\MemoryIdentityMap;
 use ZFT\User\PostgresDataMapper;
 use ZFT\User\Repository as UserRepository;
@@ -20,7 +19,9 @@ class Module implements ServiceProviderInterface {
                 MemoryIdentityMap::class => InvokableFactory::class,
 
                 UserRepository::class => RepositoryFactory::class,
-                'authentication' => AuthenticationServiceFactory::class
+                'authentication' => AuthenticationServiceFactory::class,
+
+                'ldap' => LdapFactory::class
             ]
         ];
     }
