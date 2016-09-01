@@ -11,8 +11,7 @@ If you have any fixes or improvements, you may submit a PR against `devel` branc
 
 ---
 
-Thank you very much for the donation offers! These tutorials are very long to produce. I also try to work on
-contributing bug fixes to the framework as I find them during recording sessions or day-to-day uses (very few now, but some DB DDL related ones are in the works). Extra donations
+Thank you very much for the donation offers! These tutorials are very long to produce. Extra donations
 will help towards doing this work sustainably without going on extended breaks.
 
 [![](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=PET8HPTAH3BVU)
