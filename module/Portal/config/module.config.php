@@ -5,11 +5,15 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application;
+namespace Portal;
 
+use Interop\Container\ContainerInterface;
+use Portal\Controller\IndexController;
+use Portal\Controller\UserRelatedControllerFactory;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
+use ZFT\User;
 
 return [
     'router' => [
@@ -20,6 +24,16 @@ return [
                     'route'    => '/',
                     'defaults' => [
                         'controller' => Controller\IndexController::class,
+                        'action'     => 'index',
+                    ],
+                ],
+            ],
+            'admin' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route'    => '/admin',
+                    'defaults' => [
+                        'controller' => Controller\AdminController::class,
                         'action'     => 'index',
                     ],
                 ],
@@ -38,7 +52,8 @@ return [
     ],
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class => InvokableFactory::class,
+            Controller\IndexController::class => UserRelatedControllerFactory::class,
+            Controller\AdminController::class => UserRelatedControllerFactory::class
         ],
     ],
     'view_manager' => [

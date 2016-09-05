@@ -17,5 +17,6 @@ return [
     'Zend\Cache',
     'Zend\Router',
     'Zend\Validator',
-    'Application',
+    'ZFT',
+    'Portal',
 ];

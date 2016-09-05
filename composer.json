@@ -20,16 +20,20 @@
         "zendframework/zend-db": "^2.8.1",
         "zendframework/zend-json": "^3.0",
         "zendframework/zend-log": "^2.9",
-        "zendframework/zend-session": "^2.7.1"
+        "zendframework/zend-session": "*",
+        "zendframework/zend-ldap": "*",
+        "zendframework/zend-authentication": "*"
     },
     "autoload": {
         "psr-4": {
-            "Application\\": "module/Application/src/"
+            "Portal\\": "module/Portal/src/",
+            "ZFT\\": "module/ZFT/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "ApplicationTest\\": "module/Application/test/"
+            "PortalTest\\": "module/Portal/test/",
+            "ZFTTest\\": "module/ZFT/test/"
         }
     },
     "extra": [],

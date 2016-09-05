@@ -5,15 +5,28 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Application\Controller;
+namespace Portal\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
+use ZFT\User;
 
-class IndexController extends AbstractActionController
+class AdminController extends AbstractActionController
 {
+
+    /** @var  User\Repository */
+    private $userRepository;
+
+    public function __construct(User\Repository $userRepository) {
+        $this->userRepository = $userRepository;
+    }
+
     public function indexAction()
     {
+//        $user = new User();
+
+        $user = $this->userRepository->getUserById(5);
+
         return new ViewModel();
     }
 }
