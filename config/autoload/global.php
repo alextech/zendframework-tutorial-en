@@ -13,7 +13,11 @@
 
 return [
     'db' => [
-        'driver' => 'Pgsql'
+        'hostname' => 'pgsql.ad.alex-tech-adventures.com',
+        'driver' => 'Pgsql',
+        'database' => 'zftutorial-en',
+        'username' => 'zftutorial',
+        'password' => '',
     ],
     'ldap' => [
         'host' => 'dc-server.ad.alex-tech-adventures.com',
