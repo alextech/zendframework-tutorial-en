@@ -75,4 +75,16 @@ class Migrations {
 
     }
 
+    protected function update_1_001() {
+        $iniTable = new Ddl\CreateTable('ini');
+
+        $option = new Ddl\Column\Varchar('option');
+        $value  = new Ddl\Column\Varchar('value');
+
+        $iniTable->addColumn($option);
+        $iniTable->addColumn($value);
+
+        $this->execute($iniTable);
+    }
+
 }
