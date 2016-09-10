@@ -14,9 +14,9 @@
 return [
     'db' => [
         'hostname' => 'pgsql.ad.alex-tech-adventures.com',
-        'driver' => 'Pgsql',
+        'driver' => 'Pdo_Pgsql',
         'database' => 'zftutorial-en',
-        'username' => 'zftutorial',
+        'username' => 'postgres', //@TODO use forms to request privileged permissions on migrations run
         'password' => '',
     ],
     'ldap' => [

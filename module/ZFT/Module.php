@@ -26,6 +26,7 @@ class Module implements ServiceProviderInterface {
                 $adapter = $sm->get('dbcon');
 
                 $migrations = new Migrations($adapter);
+                $migrations->needsUpdate();
             }
         }, 100);
     }
