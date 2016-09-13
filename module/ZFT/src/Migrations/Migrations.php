@@ -9,11 +9,12 @@ use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Source\Factory as MetadataFactory;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Ddl;
+use Zend\Db\Sql\Where;
 
 class Migrations {
 
     const MINIMUM_SCHEMA_VERSION = 1;
-    const INI_TABLE = 'ini-dev';
+    const INI_TABLE = 'ini';
 
     /** @var  Adapter */
     private $adapter;
@@ -72,6 +73,44 @@ class Migrations {
 //        $version = $result[0]['value'];
 
         return $version;
+
+    }
+
+    public function run() {
+        $migrationCalss = new \ReflectionClass(Migrations::class);
+        $methods = $migrationCalss->getMethods(\ReflectionMethod::IS_PROTECTED);
+
+        $updates = [];
+        array_walk($methods, function(\ReflectionMethod $method) use (&$updates) {
+            $version = substr($method->getName(), strpos($method->getName(), '_')+1);
+            $version = (int) $version;
+            $updates[$version] = $method->getName();
+        });
+
+        ksort($updates);
+
+        $currentVersion = (int) $this->getVersion();
+        for($v = $currentVersion+1; $v <= self::MINIMUM_SCHEMA_VERSION; $v++) {
+            $update = $updates[$v];
+            $this->{$update}();
+
+            $this->setVersion($v);
+        }
+
+        return;
+    }
+
+    private function setVersion($version){
+        $sql = new Sql($this->adapter);
+        $schemaVersionUpdate = $sql->update();
+        $schemaVersionUpdate->table(self::INI_TABLE);
+        $schemaVersionUpdate->set(['value' => $version]);
+
+        $schemaVersionRow = new Where();
+        $schemaVersionRow->equalTo('option', 'ZftSchemaVersion');
+
+        $schemaVersionStatement = $sql->prepareStatementForSqlObject($schemaVersionUpdate);
+        $schemaVersionStatement->execute();
 
     }
 
