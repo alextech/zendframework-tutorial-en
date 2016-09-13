@@ -8,6 +8,7 @@
 namespace Portal;
 
 use Interop\Container\ContainerInterface;
+use Portal\Controller\AdminControllerFactory;
 use Portal\Controller\IndexController;
 use Portal\Controller\UserRelatedControllerFactory;
 use Zend\Router\Http\Literal;
@@ -46,6 +47,19 @@ return [
                             'defaults' => [
                                 'needsDatabase' => false
                             ]
+                        ],
+                        'may_terminate' => true,
+                        'child_routes' => [
+                            'runmigrations' => [
+                                'type' => Literal::class,
+                                'options' => [
+                                    'route' => '/runmigrations',
+                                    'defaults' => [
+                                        'needsDatabase' => false,
+                                        'action' => 'runmigrations'
+                                    ]
+                                ]
+                            ]
                         ]
                     ]
                 ]
@@ -65,7 +79,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => UserRelatedControllerFactory::class,
-            Controller\AdminController::class => UserRelatedControllerFactory::class
+            Controller\AdminController::class => AdminControllerFactory::class
         ],
     ],
     'view_manager' => [
