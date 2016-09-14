@@ -29,6 +29,8 @@ class Migrations {
         $this->adapter = $adapter;
         $this->platform = $adapter->getPlatform();
         $this->metadata = MetadataFactory::createSourceFromAdapter($adapter);
+
+
     }
 
     public function needsUpdate() {
@@ -42,7 +44,7 @@ class Migrations {
         $this->adapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
     }
 
-    private function getVersion() {
+    protected function getVersion() {
         $tables = $this->metadata->getTables('public');
 
         $iniTable = array_filter($tables, function (TableObject $table) {
@@ -100,7 +102,7 @@ class Migrations {
         return;
     }
 
-    private function setVersion($version){
+    protected function setVersion($version){
         $sql = new Sql($this->adapter);
         $schemaVersionUpdate = $sql->update();
         $schemaVersionUpdate->table(self::INI_TABLE);
@@ -111,6 +113,10 @@ class Migrations {
 
         $schemaVersionStatement = $sql->prepareStatementForSqlObject($schemaVersionUpdate);
         $schemaVersionStatement->execute();
+
+    }
+
+    public function attach($eventName, callable $listener) {
 
     }
 
