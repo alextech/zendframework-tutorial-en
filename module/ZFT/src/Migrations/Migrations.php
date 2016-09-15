@@ -10,6 +10,7 @@ use Zend\Db\Metadata\Source\Factory as MetadataFactory;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Where;
+use Zend\EventManager\EventManager;
 
 class Migrations {
 
@@ -25,12 +26,15 @@ class Migrations {
     /** @var  MetadataInterface */
     private $metadata;
 
+    /** @var  EventManager */
+    private $eventManager;
+
     public function __construct(Adapter $adapter) {
         $this->adapter = $adapter;
         $this->platform = $adapter->getPlatform();
         $this->metadata = MetadataFactory::createSourceFromAdapter($adapter);
 
-
+        $this->eventManager = new EventManager();
     }
 
     public function needsUpdate() {
@@ -79,6 +83,11 @@ class Migrations {
     }
 
     public function run() {
+        $migrationsStartEvent = new MigrationsEvent();
+        $migrationsStartEvent->setName(MigrationsEvent::MIGRATIONS_START);
+        $migrationsStartEvent->setTarget($this);
+        $migrationsStartParams['to'] = $this->getTargetVersion();
+
         $migrationCalss = new \ReflectionClass(Migrations::class);
         $methods = $migrationCalss->getMethods(\ReflectionMethod::IS_PROTECTED);
 
@@ -92,6 +101,10 @@ class Migrations {
         ksort($updates);
 
         $currentVersion = (int) $this->getVersion();
+        $migrationsStartParams['from'] = $currentVersion;
+        $migrationsStartEvent->setParams($migrationsStartParams);
+        $this->eventManager->triggerEvent($migrationsStartEvent);
+
         for($v = $currentVersion+1; $v <= self::MINIMUM_SCHEMA_VERSION; $v++) {
             $update = $updates[$v];
             $this->{$update}();
@@ -100,6 +113,10 @@ class Migrations {
         }
 
         return;
+    }
+
+    protected function getTargetVersion() {
+        return self::MINIMUM_SCHEMA_VERSION;
     }
 
     protected function setVersion($version){
@@ -117,7 +134,7 @@ class Migrations {
     }
 
     public function attach($eventName, callable $listener) {
-
+        $this->eventManager->attach($eventName, $listener);
     }
 
     protected function update_001() {
