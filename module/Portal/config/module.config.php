@@ -10,6 +10,7 @@ namespace Portal;
 use Interop\Container\ContainerInterface;
 use Portal\Controller\AdminControllerFactory;
 use Portal\Controller\IndexController;
+use Portal\Controller\ProfileController;
 use Portal\Controller\UserRelatedControllerFactory;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Segment;
@@ -28,6 +29,28 @@ return [
                         'action'     => 'index',
                     ],
                 ],
+            ],
+            'profile' => [
+                'type' => Literal::class,
+                'options' => [
+                    'route' => '/profile',
+                    'defaults' => [
+                        'controller' => ProfileController::class,
+                        'action'     => 'view'
+                    ]
+                ],
+                'may_terminate' => true,
+                'child_routes' => [
+                    'edit_profile' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/edit',
+                            'defaults' => [
+                                'action' => 'edit'
+                            ]
+                        ]
+                    ]
+                ]
             ],
             'admin' => [
                 'type' => Literal::class,
@@ -79,7 +102,8 @@ return [
     'controllers' => [
         'factories' => [
             Controller\IndexController::class => UserRelatedControllerFactory::class,
-            Controller\AdminController::class => AdminControllerFactory::class
+            Controller\AdminController::class => AdminControllerFactory::class,
+            Controller\ProfileController::class => InvokableFactory::class
         ],
     ],
     'view_manager' => [

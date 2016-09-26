@@ -16,6 +16,9 @@ class User {
      */
     private $groups;
 
+    /** @var  string */
+    private $email;
+
     /**
      * @param mixed $id
      */
@@ -59,4 +62,17 @@ class User {
         return $this->groups;
     }
 
+    /**
+     * @param string $email
+     */
+    public function setEmail(string $email) {
+        $this->email = $email;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEmail(): string {
+        return $this->email;
+    }
 }
