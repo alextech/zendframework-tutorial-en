@@ -41,6 +41,15 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
+                    'view_profile' => [
+                        'type' => Literal::class,
+                        'options' => [
+                            'route' => '/',
+                            'defaults' => [
+                                'action' => 'view'
+                            ]
+                        ]
+                    ],
                     'edit_profile' => [
                         'type' => Literal::class,
                         'options' => [
