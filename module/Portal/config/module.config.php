@@ -30,37 +30,6 @@ return [
                     ],
                 ],
             ],
-            'profile' => [
-                'type' => Literal::class,
-                'options' => [
-                    'route' => '/profile',
-                    'defaults' => [
-                        'controller' => ProfileController::class,
-                        'action'     => 'view'
-                    ]
-                ],
-                'may_terminate' => true,
-                'child_routes' => [
-                    'view_profile' => [
-                        'type' => Literal::class,
-                        'options' => [
-                            'route' => '/',
-                            'defaults' => [
-                                'action' => 'view'
-                            ]
-                        ]
-                    ],
-                    'edit_profile' => [
-                        'type' => Literal::class,
-                        'options' => [
-                            'route' => '/edit',
-                            'defaults' => [
-                                'action' => 'edit'
-                            ]
-                        ]
-                    ]
-                ]
-            ],
             'admin' => [
                 'type' => Literal::class,
                 'options' => [
@@ -112,7 +81,6 @@ return [
         'factories' => [
             Controller\IndexController::class => UserRelatedControllerFactory::class,
             Controller\AdminController::class => AdminControllerFactory::class,
-            Controller\ProfileController::class => InvokableFactory::class
         ],
     ],
     'view_manager' => [
