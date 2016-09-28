@@ -22,7 +22,8 @@
         "zendframework/zend-log": "^2.9",
         "zendframework/zend-session": "*",
         "zendframework/zend-ldap": "*",
-        "zendframework/zend-authentication": "*"
+        "zendframework/zend-authentication": "*",
+        "zendframework/zend-mvc-plugin-flashmessenger": "^1.0"
     },
     "autoload": {
         "psr-4": {
