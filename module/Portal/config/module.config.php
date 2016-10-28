@@ -152,9 +152,9 @@ return [
     ],
     'view_helper_config' => [
         'flashmessenger' => [
-            'message_open_format' => '<div%s><ul><li>',
-            'message_separator_string' => '</li><li>',
-            'message_close_string' => '</li></ul></div>'
+            'message_open_format' => '<div%s>',
+            'message_separator_string' => '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div><div%s>',
+            'message_close_string' => '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button></div>'
         ]
     ]
 ];
