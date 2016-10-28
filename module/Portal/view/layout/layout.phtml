@@ -46,19 +46,19 @@
 
         <div class="container">
             <?php
-            echo $this->flashMessenger()->render(
+            echo $this->flashMessenger()->renderCurrent(
                 \Zend\Mvc\Plugin\FlashMessenger\FlashMessenger::NAMESPACE_ERROR, array('alert', 'alert-danger'));
 
-            echo $this->flashMessenger()->render(
+            echo $this->flashMessenger()->renderCurrent(
                 \Zend\Mvc\Plugin\FlashMessenger\FlashMessenger::NAMESPACE_INFO, array('alert', 'alert-info'));
 
-            echo $this->flashMessenger()->render(
+            echo $this->flashMessenger()->renderCurrent(
                 \Zend\Mvc\Plugin\FlashMessenger\FlashMessenger::NAMESPACE_SUCCESS, array('alert', 'alert-success'));
 
-            echo $this->flashMessenger()->render(
+            echo $this->flashMessenger()->renderCurrent(
                 \Zend\Mvc\Plugin\FlashMessenger\FlashMessenger::NAMESPACE_WARNING, array('alert', 'alert-warning'));
 
-            echo $this->flashMessenger()->render(
+            echo $this->flashMessenger()->renderCurrent(
                 \Zend\Mvc\Plugin\FlashMessenger\FlashMessenger::NAMESPACE_DEFAULT, array('alert', 'alert-info'));
             ?>
             <?= $this->content; ?>

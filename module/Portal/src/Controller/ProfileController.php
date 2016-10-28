@@ -25,7 +25,8 @@ class ProfileController extends AbstractActionController {
         $success = true;
         if($success) {
             $destinationRoute = 'profile/view_profile';
-            $flashMessenger->addSuccessMessage('Profile successfully saved');
+            $flashMessenger->addMessage('Profile successfully saved', FlashMessenger::NAMESPACE_SUCCESS, 100);
+            $flashMessenger->addMessage('This should be deleted', FlashMessenger::NAMESPACE_WARNING, 100);
         } else {
             $destinationRoute = 'profile/edit_profile/form_profile';
             $flashMessenger->addErrorMessage('Invalid email');
