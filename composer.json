@@ -27,12 +27,14 @@
     },
     "autoload": {
         "psr-4": {
+            "Admin\\": "module/Admin/src/",
             "Portal\\": "module/Portal/src/",
             "ZFT\\": "module/ZFT/src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
+            "AdminTest\\": "module/Admin/test/",
             "PortalTest\\": "module/Portal/test/",
             "ZFTTest\\": "module/ZFT/test/"
         }

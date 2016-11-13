@@ -1,6 +1,6 @@
 <?php
 
-namespace Portal\Controller;
+namespace Admin\Controller;
 
 use Interop\Container\ContainerInterface;
 use Interop\Container\Exception\ContainerException;

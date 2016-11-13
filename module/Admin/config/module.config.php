@@ -5,13 +5,10 @@
  * @license   http://framework.zend.com/license/new-bsd New BSD License
  */
 
-namespace Portal;
+namespace Admin;
 
 use Interop\Container\ContainerInterface;
-use Portal\Controller\AdminControllerFactory;
-use Portal\Controller\IndexController;
-use Portal\Controller\ProfileController;
-use Portal\Controller\UserRelatedControllerFactory;
+use Admin\Controller\AdminControllerFactory;
 use Zend\Router\Http\Literal;
 use Zend\Router\Http\Method;
 use Zend\Router\Http\Segment;
@@ -21,81 +18,46 @@ use ZFT\User;
 return [
     'router' => [
         'routes' => [
-            'home' => [
+            'admin' => [
                 'type' => Literal::class,
                 'options' => [
-                    'route'    => '/',
+                    'route'    => '/admin',
                     'defaults' => [
-                        'controller' => Controller\IndexController::class,
+                        'controller' => Controller\AdminController::class,
                         'action'     => 'index',
-                    ],
-                ],
-            ],
-            'profile' => [
-                'type' => Literal::class,
-                'options' => [
-                    'route' => '/profile',
-                    'defaults' => [
-                        'controller' => ProfileController::class,
-                        'action' => 'view'
                     ],
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
-                    'view_profile' => [
+                    'dbtools' => [
                         'type' => Literal::class,
                         'options' => [
-                            'route' => '/',
+                            'route' => '/db',
                             'defaults' => [
-                                'action' => 'view'
+                                'needsDatabase' => false
                             ]
-                        ]
-                    ],
-                    'edit_profile' => [
-                        'type' => Literal::class,
-                        'options' => [
-                            'route' => '/edit'
                         ],
-                        'may_terminate' => false,
+                        'may_terminate' => true,
                         'child_routes' => [
-                            'form_profile' => [
-                                'type' => Method::class,
+                            'runmigrations' => [
+                                'type' => Literal::class,
                                 'options' => [
-                                    'verb' => 'get',
+                                    'route' => '/runmigrations',
                                     'defaults' => [
-                                        'action' => 'edit'
-                                    ]
-                                ]
-                            ],
-                            'submit_profile' => [
-                                'type' => Method::class,
-                                'options' => [
-                                    'verb' => 'post',
-                                    'defaults' => [
-                                        'action' => 'submit'
+                                        'needsDatabase' => false,
+                                        'action' => 'runmigrations'
                                     ]
                                 ]
                             ]
                         ]
-                    ],
+                    ]
                 ]
-            ],
-            'application' => [
-                'type'    => Segment::class,
-                'options' => [
-                    'route'    => '/application[/:action]',
-                    'defaults' => [
-                        'controller'    => Controller\IndexController::class,
-                        'action'        => 'index',
-                    ],
-                ],
             ],
         ],
     ],
     'controllers' => [
         'factories' => [
-            Controller\IndexController::class => UserRelatedControllerFactory::class,
-            Controller\ProfileController::class => InvokableFactory::class
+            Controller\AdminController::class => AdminControllerFactory::class,
         ],
     ],
     'view_manager' => [
