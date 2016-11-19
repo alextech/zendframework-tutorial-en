@@ -1,10 +1,4 @@
 <?php
-/**
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Admin;
 
 use Zend\Authentication\AuthenticationService;
@@ -30,6 +24,12 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface {
         /** @var MvcEvent $e */
         $application = $e->getApplication();
         $sm = $application->getServiceManager();
+
+        $application->getEventManager()->getSharedManager()->attach(__NAMESPACE__,
+            'dispatch', function(MvcEvent $e) {
+                $e->getTarget()->layout('layout/admin');
+            });
+
         $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function(MvcEvent $e) use ($application) {
             /** @var AuthenticationService $authService */
             $authService = $application->getServiceManager()->get('authentication');

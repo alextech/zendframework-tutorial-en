@@ -1,10 +1,4 @@
 <?php
-/**
- * @link      http://github.com/zendframework/ZendSkeletonApplication for the canonical source repository
- * @copyright Copyright (c) 2005-2016 Zend Technologies USA Inc. (http://www.zend.com)
- * @license   http://framework.zend.com/license/new-bsd New BSD License
- */
-
 namespace Admin;
 
 use Interop\Container\ContainerInterface;
@@ -29,6 +23,17 @@ return [
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
+                    'users' => [
+                       'type' => Literal::class,
+                        'options' => [
+                            'route' => '/users',
+                            'defaults' => [
+                                'controller' => Controller\UsersController::class,
+                                'action'   => 'index'
+                            ]
+                        ],
+                        'may_terminate' => true
+                    ],
                     'dbtools' => [
                         'type' => Literal::class,
                         'options' => [
@@ -58,6 +63,7 @@ return [
     'controllers' => [
         'factories' => [
             Controller\AdminController::class => AdminControllerFactory::class,
+            Controller\UsersController::class  => InvokableFactory::class
         ],
     ],
     'view_manager' => [
@@ -66,8 +72,9 @@ return [
         'doctype'                  => 'HTML5',
         'not_found_template'       => 'error/404',
         'exception_template'       => 'error/index',
+        'layout'                   => 'layout/admin',
         'template_map' => [
-            'layout/layout'           => __DIR__ . '/../view/layout/layout.phtml',
+            'layout/admin'           => __DIR__ . '/../view/layout/layout.phtml',
             'application/index/index' => __DIR__ . '/../view/application/index/index.phtml',
             'error/404'               => __DIR__ . '/../view/error/404.phtml',
             'error/index'             => __DIR__ . '/../view/error/index.phtml',
