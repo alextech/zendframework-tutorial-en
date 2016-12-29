@@ -16,6 +16,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.5.0//css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1//css/ionicons.min.css">
+
+    <link rel="stylesheet" href="/plugins/multi-select/multi-select.dist.css">
     <!-- Theme style -->
     <link rel="stylesheet" href="/css/AdminLTE.min.css">
     <!-- AdminLTE Skins. We have chosen the skin-blue for this starter
@@ -252,14 +254,14 @@ desired effect
                 <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
                 <li><a href="#"><i class="fa fa-link"></i> <span>Another Link</span></a></li>
                 <li class="treeview">
-                    <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
+                    <a href="#"><i class="fa fa-link"></i> <span>Users</span>
                         <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>
                     </a>
                     <ul class="treeview-menu">
-                        <li><a href="#">Link in level 2</a></li>
-                        <li><a href="#">Link in level 2</a></li>
+                        <li><a href="/admin/users#">Users List</a></li>
+                        <li><a href="/admin/groups#">Groups List</a></li>
                     </ul>
                 </li>
             </ul>
@@ -286,6 +288,7 @@ desired effect
         <section class="content">
 
             <!-- Your Page Content Here -->
+            <?= $this->content; ?>
 
         </section>
         <!-- /.content -->
@@ -389,6 +392,13 @@ desired effect
 <script src="/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="/js/app.min.js"></script>
+<script src="/plugins/multi-select/jquery.multi-select.js"></script>
+
+<script type="text/javascript">
+    // run pre selected options
+    $('#pre-selected-options').multiSelect();
+    $('#adminUserGroups #groups').addClass('active');
+</script>
 
 <!-- Optionally, you can add Slimscroll and FastClick plugins.
      Both of these plugins are recommended to enhance the

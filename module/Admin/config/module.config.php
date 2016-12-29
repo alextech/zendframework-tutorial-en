@@ -1,10 +1,10 @@
 <?php
 namespace Admin;
 
+use Admin\Controller\UsersController;
 use Interop\Container\ContainerInterface;
 use Admin\Controller\AdminControllerFactory;
 use Zend\Router\Http\Literal;
-use Zend\Router\Http\Method;
 use Zend\Router\Http\Segment;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use ZFT\User;
@@ -24,9 +24,9 @@ return [
                 'may_terminate' => true,
                 'child_routes' => [
                     'users' => [
-                       'type' => Literal::class,
+                        'type' => Segment::class,
                         'options' => [
-                            'route' => '/users',
+                            'route' => '/:controller[/:id/:action]',
                             'defaults' => [
                                 'controller' => Controller\UsersController::class,
                                 'action'   => 'index'
@@ -61,9 +61,17 @@ return [
         ],
     ],
     'controllers' => [
+        'aliases' => [
+            'groups' => Controller\GroupsController::class,
+            'users' => Controller\UsersController::class
+        ],
         'factories' => [
             Controller\AdminController::class => AdminControllerFactory::class,
-            Controller\UsersController::class  => InvokableFactory::class
+            Controller\UsersController::class  => function(ContainerInterface $sm) {
+                $repository = $sm->get(User\Repository::class);
+                return new UsersController($repository);
+            },
+            Controller\GroupsController::class  => InvokableFactory::class
         ],
     ],
     'view_manager' => [
