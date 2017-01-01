@@ -21,6 +21,8 @@ class User {
 
     private $firstName;
 
+    private $surname;
+
     /**
      * @param mixed $id
      */
@@ -87,5 +89,19 @@ class User {
 
     public function getFirstName() {
         return $this->firstName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSurname() {
+        return $this->surname;
+    }
+
+    /**
+     * @param mixed $surname
+     */
+    public function setSurname($surname) {
+        $this->surname = $surname;
     }
 }
