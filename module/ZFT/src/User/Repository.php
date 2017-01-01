@@ -3,6 +3,7 @@
 namespace ZFT\User;
 
 use Zend\Db\TableGateway\TableGateway;
+use Zend\Hydrator;
 
 class Repository {
 
@@ -21,14 +22,7 @@ class Repository {
         }
 
         $userResultSet = $this->usersTable->select(['id' => $id]); // SELECT * FROM users WHERE id = $id
-        $userResult = $userResultSet->current();
-
-
-        $user = new User();
-        $user->setId($id);
-        $user->setFirstName($userResult->first_name);
-        $user->setSurname($userResult->surname);
-        $user->setEmail($userResult->email);
+        $user = $userResultSet->current();
 
         $this->identityMap[$id] = $user;
 
