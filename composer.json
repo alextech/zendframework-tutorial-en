@@ -23,7 +23,8 @@
         "zendframework/zend-session": "*",
         "zendframework/zend-ldap": "*",
         "zendframework/zend-authentication": "*",
-        "zendframework/zend-mvc-plugin-flashmessenger": "^1.0"
+        "zendframework/zend-mvc-plugin-flashmessenger": "^1.0",
+        "fzaninotto/faker": "*"
     },
     "autoload": {
         "psr-4": {

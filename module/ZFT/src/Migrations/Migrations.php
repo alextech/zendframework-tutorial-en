@@ -2,11 +2,13 @@
 
 namespace ZFT\Migrations;
 
+use Faker;
 use Zend\Db\Adapter\Adapter;
 use Zend\Db\Adapter\Platform\PlatformInterface;
 use Zend\Db\Metadata\MetadataInterface;
 use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Source\Factory as MetadataFactory;
+use Zend\Db\Sql\Insert;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Where;
@@ -14,7 +16,7 @@ use Zend\EventManager\EventManager;
 
 class Migrations {
 
-    const MINIMUM_SCHEMA_VERSION = 1;
+    const MINIMUM_SCHEMA_VERSION = 2;
     const INI_TABLE = 'ini';
 
     /** @var  Adapter */
@@ -162,6 +164,45 @@ class Migrations {
 
         $insertStatement = $sql->prepareStatementForSqlObject($insertInitialVersion);
         $insertStatement->execute();
+    }
+
+    protected function update_002() {
+        $usersTable = new Ddl\CreateTable('users');
+
+        // mysql version
+//        $id = new Ddl\Column\Integer('id');
+        $firstName = new Ddl\Column\Varchar('first_name');
+        $surName = new Ddl\Column\Varchar('surname');
+        $patronymic = new Ddl\Column\Varchar('patronymic', null, true);
+        $email = new Ddl\Column\Varchar('email');
+
+        // mysql version
+//        $usersTable->addColumn($id);
+        $usersTable->addColumn($firstName);
+        $usersTable->addColumn($surName);
+        $usersTable->addColumn($patronymic);
+        $usersTable->addColumn($email);
+
+        $this->execute($usersTable);
+
+        $this->adapter->query('ALTER TABLE users ADD COLUMN id SERIAL PRIMARY KEY', Adapter::QUERY_MODE_EXECUTE);
+
+        $faker = new Faker\Generator();
+        $faker->addProvider(new Faker\Provider\en_US\Person($faker));
+        $faker->addProvider(new Faker\Provider\en_GB\Internet($faker));
+
+        $insert = new Insert('users');
+        $sql = new Sql($this->adapter);
+        for ($i = 0; $i < 10; $i++) {
+            $insert->values([
+                'first_name' => $faker->firstName,
+                'surname' => $faker->lastName,
+                'email' => $faker->safeEmail
+            ]);
+
+            $insertStatement = $sql->prepareStatementForSqlObject($insert);
+            $insertStatement->execute();
+        }
     }
 
 }
