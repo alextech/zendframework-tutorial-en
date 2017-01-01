@@ -19,7 +19,9 @@ class UsersController extends AbstractActionController
     }
 
     public function activityAction() {
-
+        return [
+            'user' => $this->userRepository->getUserById(1),
+        ];
     }
 
     public function timelineAction() {

@@ -2,12 +2,32 @@
 
 namespace ZFT\User;
 
-class Repository {
-    public function __construct(IdentityMapInterface $identityMap, DataMapperInterface $dataMapper) {
+use Zend\Db\TableGateway\TableGateway;
 
+class Repository {
+
+    private $identityMap = [];
+
+    /** @var  TableGateway */
+    private $usersTable;
+
+    public function __construct(TableGateway $usersTable) {
+        $this->usersTable = $usersTable;
     }
 
     public function getUserById($id) {
-        return new User();
+        if(array_key_exists($id, $this->identityMap)) {
+            return $this->identityMap[$id];
+        }
+
+        $user = new User();
+        $user->setId($id);
+        $user->setFirstName('Nina');
+
+        $this->identityMap[$id] = $user;
+
+//        $userResultSet = $this->usersTable->select(['id' => $id]);
+
+        return $user;
     }
 }

@@ -19,6 +19,8 @@ class User {
     /** @var  string */
     private $email;
 
+    private $firstName;
+
     /**
      * @param mixed $id
      */
@@ -74,5 +76,16 @@ class User {
      */
     public function getEmail(): string {
         return $this->email;
+    }
+
+    /**
+     * @param string $firstName
+     */
+    public function setFirstName($firstName) {
+        $this->firstName = $firstName;
+    }
+
+    public function getFirstName() {
+        return $this->firstName;
     }
 }
