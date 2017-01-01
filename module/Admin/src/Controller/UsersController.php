@@ -19,8 +19,11 @@ class UsersController extends AbstractActionController
     }
 
     public function activityAction() {
+        $userID = $this->params('id');
+        $user = $this->userRepository->getUserById($userID);
+
         return [
-            'user' => $this->userRepository->getUserById(1),
+            'user' => $user,
         ];
     }
 
