@@ -20,7 +20,7 @@ use ZFT\Migrations\MigrationsEvent;
 
 class SqlServerMigrations extends Migrations {
 
-    const MINIMUM_SCHEMA_VERSION = 3;
+    const MINIMUM_SCHEMA_VERSION = 4;
     const INI_TABLE = 'ini';
 
     protected function getVersion() {
@@ -228,6 +228,67 @@ class SqlServerMigrations extends Migrations {
                 'email' => $faker->safeEmail,
                 'profile_image' => $faker->unique()->numberBetween(11, 100)
             ]);
+        }
+    }
+
+    public function update_004() {
+        $sql = new Sql($this->adapter);
+
+        $this->adapter->query(
+'CREATE TABLE [groups] (
+    [id] INTEGER NOT NULL IDENTITY(1, 1),
+    [name] NVARCHAR(128) NOT NULL,
+    CONSTRAINT [PK_groups] PRIMARY KEY (id)
+)',
+            Adapter::QUERY_MODE_EXECUTE);
+
+        $insertGroups = new Insert('groups');
+        $insertGroups->values([
+            'name' => ':name'
+        ]);
+        $stmt = $sql->prepareStatementForSqlObject($insertGroups);
+
+        $stmt->execute(['name' => 'Admin']);
+        $stmt->execute(['name' => 'User']);
+        $stmt->execute(['name' => 'PHP Developers']);
+        $stmt->execute(['name' => 'UI Designers']);
+        $stmt->execute(['name' => 'Zend Framework Developers']);
+        $stmt->execute(['name' => 'Human Relations']);
+
+        $this->adapter->query(
+'CREATE TABLE [user_group_membership] (
+    [user_id] INTEGER NOT NULL,
+    [group_id] INTEGER NOT NULL,
+    CONSTRAINT [PK_user_group_membership] PRIMARY KEY CLUSTERED ([user_id], [group_id]),
+    CONSTRAINT [FK_user] FOREIGN KEY ([user_id]) REFERENCES [users] ([id]),
+    CONSTRAINT [FK_group] FOREIGN KEY ([group_id]) REFERENCES [groups] ([id])
+)',
+            Adapter::QUERY_MODE_EXECUTE);
+
+        $insertMembers = new Insert('user_group_membership');
+        $insertMembers->values([
+            'user_id' => ':user_id',
+            'group_id' => ':group_id'
+        ]);
+
+        $stmt = $sql->prepareStatementForSqlObject($insertMembers);
+
+        $faker = new Faker\Generator();
+        $faker->addProvider(new Faker\Provider\Base($faker));
+
+        for($i = 1; $i <= 100 ; $i++) {
+            $belongsToNumberOfGroups = $faker->numberBetween(1, 4);
+            $usedGroupIDs = [];
+            for($j = 0; $j < $belongsToNumberOfGroups; $j++) {
+                do{
+                    $groupID = $faker->numberBetween(1, 6);
+                } while(in_array($groupID, $usedGroupIDs, false));
+                $usedGroupIDs[] = $groupID;
+                $stmt->execute([
+                    'user_id' => $i,
+                    'group_id' => $groupID
+                ]);
+            }
         }
     }
 

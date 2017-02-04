@@ -17,7 +17,7 @@ use Zend\EventManager\EventManager;
 
 class Migrations {
 
-    const MINIMUM_SCHEMA_VERSION = 3;
+    const MINIMUM_SCHEMA_VERSION = 4;
     const INI_TABLE = 'ini';
 
     /** @var  Adapter */
@@ -265,6 +265,76 @@ class Migrations {
                 'email' => $faker->safeEmail,
                 'profile_image' => $faker->unique()->numberBetween(11, 100)
             ]);
+        }
+    }
+
+    protected function update_004() {
+        $sql = new Sql($this->adapter);
+
+        $groupsTable = new Ddl\CreateTable('groups');
+        $name = new Ddl\Column\Varchar('name', 128);
+        $groupsTable->addColumn($name);
+
+        $this->execute($groupsTable);
+        $this->adapter->query('ALTER TABLE groups ADD COLUMN id SERIAL PRIMARY KEY', Adapter::QUERY_MODE_EXECUTE);
+
+        $insertGroups = new Insert('groups');
+        $insertGroups->values([
+            'name' => ':name'
+        ]);
+        $stmt = $sql->prepareStatementForSqlObject($insertGroups);
+
+        $stmt->execute(['name' => 'Admin']);
+        $stmt->execute(['name' => 'User']);
+        $stmt->execute(['name' => 'PHP Developers']);
+        $stmt->execute(['name' => 'UI Designers']);
+        $stmt->execute(['name' => 'Zend Framework Developers']);
+        $stmt->execute(['name' => 'Human Relations']);
+
+        $userGroupMembership = new Ddl\CreateTable('user_group_membership');
+        $userID = new Ddl\Column\Integer('user_id');
+        $groupID = new Ddl\Column\Integer('group_id');
+
+        $userGroupMembership->addColumn($userID);
+        $userGroupMembership->addColumn($groupID);
+
+        $userGroupMembership->addConstraint(new Ddl\Constraint\ForeignKey(
+            'FK_user', 'user_id', 'users', 'id'
+        ));
+        $userGroupMembership->addConstraint(new Ddl\Constraint\ForeignKey(
+            'FK_group', 'group_id', 'groups', 'id'
+        ));
+
+        $userGroupMembership->addConstraint(new Ddl\Constraint\PrimaryKey(
+            ['user_id', 'group_id'],
+            'PK_user_group_membership'
+        ));
+        $this->execute($userGroupMembership);
+
+        $insertMembers = new Insert('user_group_membership');
+        $insertMembers->values([
+            'user_id' => ':user_id',
+            'group_id' => ':group_id'
+        ]);
+
+        $stmt = $sql->prepareStatementForSqlObject($insertMembers);
+
+        $faker = new Faker\Generator();
+        $faker->addProvider(new Faker\Provider\Base($faker));
+
+        for($i = 1; $i <= 100 ; $i++) {
+            $belongsToNumberOfGroups = $faker->numberBetween(1, 4);
+            $usedGroupIDs = [];
+            for($j = 0; $j < $belongsToNumberOfGroups; $j++) {
+                do{
+                    $groupID = $faker->numberBetween(1, 6);
+                } while(in_array($groupID, $usedGroupIDs, false));
+                $usedGroupIDs[] = $groupID;
+                $stmt->execute([
+                    'user_id' => $i,
+                    'group_id' => $groupID
+                ]);
+            }
         }
     }
 
