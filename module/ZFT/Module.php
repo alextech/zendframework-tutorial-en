@@ -3,13 +3,15 @@
 namespace ZFT;
 
 use Zend\Db\Adapter\AdapterInterface;
-use Zend\EventManager\Event;
+use Zend\Db\Adapter\Platform\SqlServer;
+use Zend\Db\Adapter\Platform\Postgresql;
 use Zend\ModuleManager\Feature\ServiceProviderInterface;
 use Zend\Mvc\MvcEvent;
 use Zend\ServiceManager\Factory\InvokableFactory;
 use ZFT\Authentication\AuthenticationServiceFactory;
 use ZFT\Connections\LdapFactory;
 use ZFT\Migrations\Migrations;
+use ZFT\Migrations\Platform\SqlServerMigrations;
 use ZFT\User\MemoryIdentityMap;
 use ZFT\User\PostgresDataMapper;
 use ZFT\User\Repository as UserRepository;
@@ -26,8 +28,16 @@ class Module implements ServiceProviderInterface {
             $router = $e->getRouteMatch();
             if(!($router->getParam('needsDatabase') === false)) {
                 $adapter = $sm->get('dbcon');
+                $platform = $adapter->platform;
 
-                $migrations = new Migrations($adapter);
+                switch (true) {
+                    case $platform instanceof SqlServer:
+                        $migrations = new SqlServerMigrations($adapter);
+                        break;
+                    case $platform instanceof Postgresql:
+                        $migrations = new Migrations($adapter);
+                        break;
+                }
                 if($migrations->needsUpdate()) {
                     $e->setName(MvcEvent::EVENT_DISPATCH_ERROR);
                     $e->setError('Database Needs Update');

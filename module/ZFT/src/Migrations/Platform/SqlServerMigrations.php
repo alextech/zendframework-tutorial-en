@@ -1,6 +1,6 @@
 <?php
 
-namespace ZFT\Migrations;
+namespace ZFT\Migrations\Platform;
 
 use Faker;
 use Zend\Db\Adapter\Adapter;
@@ -9,50 +9,22 @@ use Zend\Db\Metadata\MetadataInterface;
 use Zend\Db\Metadata\Object\TableObject;
 use Zend\Db\Metadata\Source\Factory as MetadataFactory;
 use Zend\Db\Sql\Insert;
+use Zend\Db\Sql\Predicate\Predicate;
 use Zend\Db\Sql\Sql;
 use Zend\Db\Sql\Ddl;
 use Zend\Db\Sql\Update;
 use Zend\Db\Sql\Where;
 use Zend\EventManager\EventManager;
+use ZFT\Migrations\Migrations;
+use ZFT\Migrations\MigrationsEvent;
 
-class Migrations {
+class SqlServerMigrations extends Migrations {
 
     const MINIMUM_SCHEMA_VERSION = 3;
     const INI_TABLE = 'ini';
 
-    /** @var  Adapter */
-    protected $adapter;
-
-    /** @var  PlatformInterface */
-    protected $platform;
-
-    /** @var  MetadataInterface */
-    protected $metadata;
-
-    /** @var  EventManager */
-    protected $eventManager;
-
-    public function __construct(Adapter $adapter) {
-        $this->adapter = $adapter;
-        $this->platform = $adapter->getPlatform();
-        $this->metadata = MetadataFactory::createSourceFromAdapter($adapter);
-
-        $this->eventManager = new EventManager();
-    }
-
-    public function needsUpdate() {
-        return ($this->getVersion() < self::MINIMUM_SCHEMA_VERSION);
-    }
-
-    protected function execute(Ddl\SqlInterface $ddl) {
-        $sql = new Sql($this->adapter);
-        $sqlString = $sql->buildSqlString($ddl);
-
-        $this->adapter->query($sqlString, Adapter::QUERY_MODE_EXECUTE);
-    }
-
     protected function getVersion() {
-        $tables = $this->metadata->getTables('public');
+        $tables = $this->metadata->getTables();
 
         $iniTable = array_filter($tables, function (TableObject $table) {
             return strcmp($table->getName(), self::INI_TABLE) === 0;
@@ -143,8 +115,8 @@ class Migrations {
     protected function update_001() {
         $iniTable = new Ddl\CreateTable(self::INI_TABLE);
 
-        $option = new Ddl\Column\Varchar('option');
-        $value  = new Ddl\Column\Varchar('value');
+        $option = new Ddl\Column\Varchar('option', 32);
+        $value  = new Ddl\Column\Varchar('value', 32);
 
         $iniTable->addColumn($option);
         $iniTable->addColumn($value);
@@ -154,8 +126,8 @@ class Migrations {
         $sql = new Sql($this->adapter);
         $insertInitialVersion = $sql->insert();
         $insertInitialVersion->into(self::INI_TABLE);
-//        $insertInitialVersion->columns(array('option', 'value'));
-//        $insertInitialVersion->values(array('ZftSchemaVersion', 1));
+        $insertInitialVersion->columns(array('option', 'value'));
+        $insertInitialVersion->values(array('ZftSchemaVersion', 1));
         $values = [
             'option' => 'ZftSchemaVersion',
             'value' => 1
@@ -168,33 +140,25 @@ class Migrations {
     }
 
     protected function update_002() {
-        $usersTable = new Ddl\CreateTable('users');
 
-        // mysql version
-//        $id = new Ddl\Column\Integer('id');
-        $firstName = new Ddl\Column\Varchar('first_name');
-        $surName = new Ddl\Column\Varchar('surname');
-        $patronymic = new Ddl\Column\Varchar('patronymic', null, true);
-        $email = new Ddl\Column\Varchar('email');
-
-        // mysql version
-//        $usersTable->addColumn($id);
-        $usersTable->addColumn($firstName);
-        $usersTable->addColumn($surName);
-        $usersTable->addColumn($patronymic);
-        $usersTable->addColumn($email);
-
-        $this->execute($usersTable);
-
-        $this->adapter->query('ALTER TABLE users ADD COLUMN id SERIAL PRIMARY KEY', Adapter::QUERY_MODE_EXECUTE);
+        $this->adapter->query(
+            'CREATE TABLE [users] (
+    [id] INTEGER NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    [first_name] NVARCHAR(32) NOT NULL,
+    [surname] NVARCHAR(32) NOT NULL,
+    [patronymic] NVARCHAR(32),
+    [email] NVARCHAR(128) NOT NULL 
+)',
+            Adapter::QUERY_MODE_EXECUTE);
 
         $faker = new Faker\Generator();
         $faker->addProvider(new Faker\Provider\en_US\Person($faker));
         $faker->addProvider(new Faker\Provider\en_GB\Internet($faker));
 
         $insert = new Insert('users');
+
         $sql = new Sql($this->adapter);
-        for ($i = 0; $i < 10; $i++) {
+        for($i = 0; $i < 10; $i++) {
             $insert->values([
                 'first_name' => $faker->firstName,
                 'surname' => $faker->lastName,
@@ -209,12 +173,12 @@ class Migrations {
     protected function update_003() {
         $sql = new Sql($this->adapter);
 
-        $assetsTable = new Ddl\CreateTable('assets');
-        $path = new Ddl\Column\Varchar('path', 128);
-        $assetsTable->addColumn($path);
-
-        $this->execute($assetsTable);
-        $this->adapter->query('ALTER TABLE assets ADD COLUMN id SERIAL PRIMARY KEY', Adapter::QUERY_MODE_EXECUTE);
+        $this->adapter->query(
+            'CREATE TABLE [assets] (
+    [id] INTEGER NOT NULL PRIMARY KEY IDENTITY(1, 1),
+    [path] NVARCHAR(128) NOT NULL
+)',
+            Adapter::QUERY_MODE_EXECUTE);
 
         $insertSampleImages = new Insert('assets');
         $insertSampleImages->values([
@@ -225,15 +189,12 @@ class Migrations {
             $stmt->execute([':path' => 'user_'.$i.'.png']);
         }
 
-        $usersTable = new Ddl\AlterTable('users');
-        $profileImage = new Ddl\Column\Integer('profile_image', true);
-        $profileImage->addConstraint(new Ddl\Constraint\ForeignKey(
-            'userprofileimage_assets_relation',
-            null, 'assets', 'id'
-        ));
-        $usersTable->addColumn($profileImage);
-
-        $this->execute($usersTable);
+        $this->adapter->query(
+            'ALTER TABLE [users]
+ ADD [profile_image] INTEGER,
+ CONSTRAINT [userprofileimage_assets_relation] FOREIGN KEY ([profile_image]) REFERENCES [assets] ([id])',
+            Adapter::QUERY_MODE_EXECUTE
+        );
 
         $setProfileImage = new Update('users');
         $setProfileImage->set(['profile_image' => ':profile_image'])
@@ -248,16 +209,18 @@ class Migrations {
         $insertMoreUsers = new Insert('users');
         $insertMoreUsers->values([
             'first_name' => ':first_name',
-            'surname' => ':last_name',
+            'surname' => ':surname',
+            'patronymic' => ':patronymic',
             'email' => ':email',
-            'profile_image' => 'profile_image'
+            'profile_image' => ':profile_image'
         ]);
-        $insertStatement = $sql->prepareStatementForSqlObject($insertMoreUsers);
 
         $faker = new Faker\Generator();
         $faker->addProvider(new Faker\Provider\en_US\Person($faker));
         $faker->addProvider(new Faker\Provider\en_GB\Internet($faker));
 
+
+        $insertStatement = $sql->prepareStatementForSqlObject($insertMoreUsers);
         for($i = 0; $i < 90; $i++) {
             $insertStatement->execute([
                 'first_name' => $faker->firstName,
