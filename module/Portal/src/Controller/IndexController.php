@@ -29,13 +29,6 @@ class IndexController extends AbstractActionController
 
     public function indexAction()
     {
-        /** @var Ldap $adapter */
-        $adapter = $this->authService->getAdapter();
-        $adapter->setIdentity('zftutorial'); // username
-        $adapter->setCredential('ZFT2016!'); // password
-        $result = $this->authService->authenticate();
-        $isSuccessful = $result->isValid();
-
 //        $user = new User();
 
         $user = $this->userRepository->getUserById(5);

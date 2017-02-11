@@ -8,8 +8,14 @@
 namespace ApplicationTest\Controller;
 
 use Portal\Controller\IndexController;
+use Portal\Controller\UserRelatedControllerFactory;
+use Zend\Db\Adapter\Adapter;
+use Zend\Db\Adapter\Platform\Sql92;
 use Zend\Stdlib\ArrayUtils;
 use Zend\Test\PHPUnit\Controller\AbstractHttpControllerTestCase;
+use ZendTest\Db\TestAsset\PdoStubDriver;
+use ZendTest\Db\TestAsset\TrustingSql92Platform;
+use ZFT\User;
 
 class IndexControllerTest extends AbstractHttpControllerTestCase
 {
@@ -27,6 +33,25 @@ class IndexControllerTest extends AbstractHttpControllerTestCase
         ));
 
         parent::setUp();
+
+        $serviceManager = $this->getApplicationServiceLocator();
+        $serviceManager->setAllowOverride(true);
+        $serviceManager->setService('config', ['db' => []]);
+
+        $adapter = $this->createMock(Adapter::class);
+        $adapter->expects($this->any())
+            ->method('getPlatform')
+            ->will($this->returnValue(new Sql92()));
+
+        $serviceManager->setService('dbcon', $adapter);
+
+        $userRelatedFactoryMock = $this->createMock(User\Repository::class);
+        $userRelatedFactoryMock->expects($this->any())
+            ->method('getUserById')
+            ->withAnyParameters()
+            ->willReturn(new User\User());
+
+        $serviceManager->setService(User\Repository::class, $userRelatedFactoryMock);
     }
 
     public function testIndexActionCanBeAccessed()

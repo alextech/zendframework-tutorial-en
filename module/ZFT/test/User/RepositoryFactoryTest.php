@@ -2,6 +2,7 @@
 
 namespace ZFTest\User;
 
+use Zend\Db\Adapter\Adapter;
 use Zend\ServiceManager\ServiceManager;
 use ZFT\User\MemoryIdentityMap;
 use ZFT\User\PostgresDataMapper;
@@ -11,7 +12,7 @@ use ZFT\User\IdentityMapInterface;
 use ZFT\User\DataMapperInterface;
 
 class RepositoryFactoryTest extends \PHPUnit_Framework_TestCase {
-    function testCanCreateUserRepository() {
+    public function testCanCreateUserRepository() {
         $sm = new ServiceManager();
         $sm->setFactory(MemoryIdentityMap::class, function() {
             return new class() implements IdentityMapInterface {
@@ -23,6 +24,10 @@ class RepositoryFactoryTest extends \PHPUnit_Framework_TestCase {
             return new class() implements DataMapperInterface {
 
             };
+        });
+
+        $sm->setFactory('dbcon', function() {
+            return $this->createMock(Adapter::class);
         });
 
 

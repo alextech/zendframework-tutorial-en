@@ -2,6 +2,7 @@
 
 namespace ZFTest\User;
 
+use Zend\Db\ResultSet\ResultSet;
 use Zend\Db\TableGateway\AbstractTableGateway;
 use Zend\Db\TableGateway\TableGateway;
 use ZFT\User;
@@ -23,15 +24,9 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
         $dataMapperStub = new DataMapperStub();
         */
 
-        $identityMapStub = new class() implements User\IdentityMapInterface {
+        $usersTableMock = $this->createMock(TableGateway::class);
 
-        };
-
-        $dataMapperStub = new class() implements User\DataMapperInterface {
-
-        };
-
-        $repository = new User\Repository($identityMapStub, $dataMapperStub);
+        $repository = new User\Repository($usersTableMock);
 
         $this->assertInstanceOf(User\Repository::class, $repository);
     }
@@ -39,6 +34,18 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
     public function testGetSameObjectWithMultipleRequests() {
         $usersTableMock = $this->createMock(TableGateway::class);
 
+        $stubUser2 = new User\User();
+        $stubUser3 = new User\User();
+
+
+        $resultSetMock = $this->createMock(ResultSet::class);
+        $resultSetMock->expects($this->exactly(2))
+            ->method('current')
+            ->willReturnOnConsecutiveCalls([$stubUser2, $stubUser3]);
+
+        $usersTableMock->expects($this->any())
+            ->method('select')
+            ->willReturn($resultSetMock);
         $repository = new User\Repository($usersTableMock);
 
         $user2 = $repository->getUserById(2);

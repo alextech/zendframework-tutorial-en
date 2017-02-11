@@ -29,13 +29,13 @@ class AuthenticationServiceFactory implements FactoryInterface {
     public function __invoke(ContainerInterface $sm, $requestedName, array $options = null) {
         $config = $sm->get('Configuration');
         /** @var Ldap $ldapConnection */
-        $ldapConnection = $sm->get('ldap');
+//        $ldapConnection = $sm->get('ldap');
 
-        $adapter = new LdapAdapter();
-        $adapter->setLdap($ldapConnection);
+//        $adapter = new LdapAdapter();
+//        $adapter->setLdap($ldapConnection);
 
         $auth = new AuthenticationService();
-        $auth->setAdapter($adapter);
+//        $auth->setAdapter($adapter);
 
         return $auth;
     }

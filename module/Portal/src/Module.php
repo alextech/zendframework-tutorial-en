@@ -34,10 +34,10 @@ class Module implements ConfigProviderInterface, BootstrapListenerInterface {
         $sm = $application->getServiceManager();
         $application->getEventManager()->attach(MvcEvent::EVENT_DISPATCH, function(MvcEvent $e) use ($application) {
             /** @var AuthenticationService $authService */
-            $authService = $application->getServiceManager()->get('authentication');
+//            $authService = $application->getServiceManager()->get('authentication');
 
-            $hasIdentity = $authService->hasIdentity();
-            $identity = $authService->getIdentity();
+//            $hasIdentity = $authService->hasIdentity();
+//            $identity = $authService->getIdentity();
 
             return;
         }, 100);

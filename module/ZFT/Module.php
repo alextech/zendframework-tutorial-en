@@ -37,6 +37,8 @@ class Module implements ServiceProviderInterface {
                     case $platform instanceof Postgresql:
                         $migrations = new Migrations($adapter);
                         break;
+                    default:
+                        return $e;
                 }
                 if($migrations->needsUpdate()) {
                     $e->setName(MvcEvent::EVENT_DISPATCH_ERROR);

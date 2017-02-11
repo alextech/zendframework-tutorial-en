@@ -12,22 +12,22 @@
  */
 
 return [
-    'db' => [
-        'hostname' => 'pgsql.ad.alex-tech-adventures.com',
-        'driver' => 'Pdo_Pgsql',
-        'database' => 'zftutorial-en',
-        'username' => 'postgres', //@TODO use forms to request privileged permissions on migrations run
-        'password' => '',
-    ],
-//        'db' => [
-////        'hostname' => 'SQL-SERVER\ATA',
-//        'hostname' => 'LABHOST\SQLSRV_DEV',
-//        'port' => '1433',
-//        'driver' => 'pdo_sqlsrv',
+//    'db' => [
+//        'hostname' => 'pgsql.ad.alex-tech-adventures.com',
+//        'driver' => 'Pdo_Pgsql',
 //        'database' => 'zftutorial-en',
-//        'username' => '', //@TODO use forms to request privileged permissions on migrations run
+//        'username' => 'zftutorial-en', //@TODO use forms to request privileged permissions on migrations run
 //        'password' => '',
 //    ],
+        'db' => [
+//        'hostname' => 'SQL-SERVER\ATA',
+        'hostname' => 'LABHOST\SQLSRV_DEV',
+        'port' => '1433',
+        'driver' => 'pdo_sqlsrv',
+        'database' => 'zftutorial-en',
+        'username' => '', //@TODO use forms to request privileged permissions on migrations run
+        'password' => '',
+    ],
     'ldap' => [
         'host' => 'dc-server.ad.alex-tech-adventures.com',
         'useStartTls' => true,

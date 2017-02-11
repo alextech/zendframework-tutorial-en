@@ -108,7 +108,7 @@ class Migrations {
         $migrationsStartEvent->setParams($migrationsStartParams);
         $this->eventManager->triggerEvent($migrationsStartEvent);
 
-        for($v = $currentVersion+1; $v <= self::MINIMUM_SCHEMA_VERSION; $v++) {
+        for($v = $currentVersion+1; $v <= static::MINIMUM_SCHEMA_VERSION; $v++) {
             $update = $updates[$v];
             $this->{$update}();
 
