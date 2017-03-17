@@ -2,6 +2,8 @@
 
 namespace ZFT\User;
 
+use ZFT\Assets\Image;
+
 class User {
 
     private $id;
@@ -22,6 +24,9 @@ class User {
     private $firstName;
 
     private $surname;
+
+    /** @var  Image */
+    private $profileImage;
 
     /**
      * @param mixed $id
@@ -52,7 +57,7 @@ class User {
     }
 
     /**
-     * @param Group $groups
+     * @param Group $group
      */
     public function addToGroup(Group $group) {
         $this->groups[] = $group;
@@ -103,5 +108,13 @@ class User {
      */
     public function setSurname($surname) {
         $this->surname = $surname;
+    }
+
+    public function setProfileImage(Image $image) {
+        $this->profileImage = $image;
+    }
+
+    public function getProfileImage() : Image {
+        return $this->profileImage;
     }
 }

@@ -24,7 +24,7 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
         $dataMapperStub = new DataMapperStub();
         */
 
-        $usersTableMock = $this->createMock(TableGateway::class);
+        $usersTableMock = $this->createMock(User\UserDataMapper::class);
 
         $repository = new User\Repository($usersTableMock);
 
@@ -32,7 +32,7 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
     }
 
     public function testGetSameObjectWithMultipleRequests() {
-        $usersTableMock = $this->createMock(TableGateway::class);
+        $usersTableMock = $this->createMock(User\UserDataMapper::class);
 
         $stubUser2 = new User\User();
         $stubUser3 = new User\User();
@@ -44,7 +44,7 @@ class UserRepositoryTest extends \PHPUnit_Framework_TestCase {
             ->willReturnOnConsecutiveCalls([$stubUser2, $stubUser3]);
 
         $usersTableMock->expects($this->any())
-            ->method('select')
+            ->method('getUserById')
             ->willReturn($resultSetMock);
         $repository = new User\Repository($usersTableMock);
 
