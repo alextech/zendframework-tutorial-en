@@ -13,6 +13,7 @@ use Zend\Hydrator\ClassMethods;
 use Zend\Hydrator\ObjectProperty;
 use Zend\Hydrator\Strategy\ClosureStrategy;
 use ZFT\Assets\Image;
+use ZFT\Assets\ImageHydrator;
 
 class UserDataMapper extends TableGateway {
 
@@ -42,11 +43,7 @@ class UserDataMapper extends TableGateway {
         $user['profileImage'] = $image;
 
         $hydrator = new ClassMethods(true);
-        $hydrator->addStrategy('profileImage', new ClosureStrategy(null, function($value) {
-            $h = new ObjectProperty();
-            $image = $h->hydrate($value, new Image(null));
-            return $image;
-        }));
+        $hydrator->addStrategy('profileImage', new ImageHydrator());
 
         unset($user['image_id']);
         unset($user['image_path']);
