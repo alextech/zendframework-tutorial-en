@@ -222,7 +222,7 @@ class Migrations {
         ]);
         $stmt = $sql->prepareStatementForSqlObject($insertSampleImages);
         for($i = 1; $i <= 100; $i++) {
-            $stmt->execute([':path' => 'user-'.$i.'.png']);
+            $stmt->execute([':path' => 'user_'.$i.'.png']);
         }
 
         $usersTable = new Ddl\AlterTable('users');
