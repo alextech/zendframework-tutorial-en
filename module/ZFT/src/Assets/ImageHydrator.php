@@ -18,11 +18,12 @@ class ImageHydrator implements StrategyInterface {
      * @throws \InvalidArgumentException
      */
     public function hydrate($value) : Image {
-        if(! array_key_exists('path', $value)) {
-            throw new \InvalidArgumentException('Image data should contain path key');
+        $value = json_decode($value);
+        if(is_array($value)) {
+            $value = $value[0];
         }
 
-        return new Image($value['path']);
+        return new Image($value->path);
     }
 
 }
