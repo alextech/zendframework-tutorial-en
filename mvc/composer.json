@@ -50,7 +50,6 @@
         "serve": "php -S 0.0.0.0:8080 -t public/ public/index.php"
     },
     "require-dev": {
-        "zendframework/zend-developer-tools": "^1.1.0",
         "zendframework/zend-test": "^3.0.1"
     }
 }
